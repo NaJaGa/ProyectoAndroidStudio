@@ -71,16 +71,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var islogged by remember { mutableStateOf(false) }
-
-
+            var currentUser by remember { mutableStateOf<User?>(null) }
 
             Actividad2Theme {
-                if (islogged) {
-                    MainScreen()
+                if (currentUser != null) {
+                    MainScreen(currentUser!!)
                 } else {
-                    LoginScreen()
+                    LoginScreen { user ->
+                        currentUser = user
+                    }
                 }
+
             }
         }
     }
@@ -344,8 +345,7 @@ fun Mibox(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun LoginScreen(
-) {
+fun LoginScreen(onloginSuccess: (User) -> Unit) {
 
 
     var visible by remember { mutableStateOf(false) }
@@ -467,21 +467,10 @@ fun LoginScreen(
                         onClick = {
                             if(escorreo){
                                 scope.launch{
-                                    try {
-
-                                        login(correo,contrasena,context,)
-
-
-
-                                    }catch (e: Exception){
-                                        e.printStackTrace()
-                                        Toast.makeText(
-                                            context,
-                                            "Error Con la Conexion",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-
+                                        val user = loginAndGetUser(correo,contrasena,context)
+                                        if (user != null) {
+                                            onloginSuccess(user)
+                                        }
                                 }
                             }
 
@@ -511,9 +500,8 @@ fun LoginScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun MainScreen(
+fun MainScreen(User: User) {
 
-) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -557,7 +545,7 @@ fun MainScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "",
+                text = "${User.Name} ${User.LastName}",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = White
@@ -566,29 +554,35 @@ fun MainScreen(
     }
 }
 
-suspend fun login(
+suspend fun loginAndGetUser(
     correo: String,
     contrasena: String,
     context: Context,
 
-
-){
+):User?{
     val request = LoginRequest(
         LoginData = LoginData(
             Email = correo,
             Password = contrasena
         )
     )
-    val response = RetrofitClient2.api.login(request)
-    val userLoggedList = response.d.UserLogged
-    val user = userLoggedList?.firstOrNull()
+    return try {
+        val response = RetrofitClient2.api.login(request)
+        val userLoggedList = response.d.UserLogged
+        val user = userLoggedList?.firstOrNull()
 
-    if (user != null) {
-        Toast.makeText(context, "Bienvenido ${user.Name} ${user.LastName}", Toast.LENGTH_SHORT).show()
+        if (user != null) {
+            Toast.makeText(context, "Bienvenido ${user.Name} ${user.LastName}", Toast.LENGTH_SHORT).show()
+            user
 
-    } else {
-        Toast.makeText(context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-
+        } else {
+            Toast.makeText(context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+            null
+        }
+    }catch (e: Exception){
+        e.printStackTrace()
+        Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show()
+        null
     }
 
 }
