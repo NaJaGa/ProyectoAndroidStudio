@@ -541,14 +541,12 @@ fun MainScreen(User: User) {
                 text = "Bienvenido",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = White
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "${User.Name} ${User.LastName}",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = White
             )
         }
     }
