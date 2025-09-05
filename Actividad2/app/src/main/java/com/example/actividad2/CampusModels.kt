@@ -35,7 +35,7 @@ data class User(
     val Email: String,
     val StudentNumber: Int,
     val CampusID: Int,
-    val Campus: String
+    val CampusName: String
 )
 
 data class NewUserRequest(

@@ -570,7 +570,7 @@ suspend fun loginAndGetUser(
         val user = userLoggedList?.firstOrNull()
 
         if (user != null) {
-            Toast.makeText(context, "Bienvenido ${user.Name} ${user.LastName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Bienvenido ${user.Name} ${user.LastName} ${user.CampusName}", Toast.LENGTH_SHORT).show()
             user
 
         } else {
