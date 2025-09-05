@@ -57,13 +57,26 @@ import com.example.actividad2.ui.theme.VerdeTecmi
 import com.example.actividad2.ui.theme.White
 import android.util.Patterns
 import android.widget.Toast
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Surface
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.actividad2.FeedScreen
+import com.example.actividad2.MainScreen
+import com.example.actividad2.UserInfoScreen
+
 
 class MainActivity : ComponentActivity() {
 
@@ -74,13 +87,16 @@ class MainActivity : ComponentActivity() {
             var currentUser by remember { mutableStateOf<User?>(null) }
 
             Actividad2Theme {
-                if (currentUser != null) {
-                    MainScreen(currentUser!!)
-                } else {
-                    LoginScreen { user ->
+
+                AppNavigator(
+                    currentUser = currentUser,
+                    onLogin = { user ->
                         currentUser = user
+                    },
+                    onLogout = {
+                        currentUser = null
                     }
-                }
+                )
 
             }
         }
@@ -500,8 +516,8 @@ fun LoginScreen(onloginSuccess: (User) -> Unit) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun MainScreen(User: User) {
-
+fun MainScreen(User: User, onLogout: () -> Unit,navController: NavController) {
+    var showMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -513,6 +529,41 @@ fun MainScreen(User: User) {
                 ),
                 title = {
                     Text("Tec Milenio")
+                },
+                actions = {
+                    IconButton(
+                        onClick = { showMenu = !showMenu },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = White
+                        ),
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(Icons.Default.MoreVert,contentDescription = "Opciones", modifier = Modifier.size(40.dp))
+
+
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        modifier = Modifier.width(150.dp)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("View Feed") },
+                            onClick = { navController.navigate(AppDestinations.FEED_SCREEN) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("My Friends") },
+                            onClick = { navController.navigate(AppDestinations.FRIENDS_SCREEN) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("My Info") },
+                            onClick = { navController.navigate(AppDestinations.USER_INFO_SCREEN) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Cerrar Sesion") },
+                            onClick = { onLogout() }
+                        )
+                    }
                 }
             )
         }, bottomBar = {
@@ -610,4 +661,51 @@ suspend fun signup(nombre: String, apellido: String, matricula: String, correo: 
         Toast.makeText(context, mensaje ?: "Error al crear el usuario", Toast.LENGTH_SHORT).show()
     }
 
+}
+
+@Composable
+fun AppNavigator(currentUser: User?, onLogin: (User) -> Unit, onLogout: () -> Unit) {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = if (currentUser != null) AppDestinations.MAIN_SCREEN else AppDestinations.LOGIN_SCREEN
+    ) {
+        // Login
+        composable(AppDestinations.LOGIN_SCREEN) {
+            LoginScreen { user ->
+                onLogin(user)
+                navController.navigate(AppDestinations.MAIN_SCREEN) {
+                    popUpTo(AppDestinations.LOGIN_SCREEN) { inclusive = true }
+                }
+            }
+        }
+
+        // Main
+        composable(AppDestinations.MAIN_SCREEN) {
+            currentUser?.let{user ->
+                MainScreen(
+                    User = user,
+                    onLogout = {
+                        onLogout()
+                        navController.navigate(AppDestinations.LOGIN_SCREEN) {
+                            popUpTo(AppDestinations.MAIN_SCREEN) { inclusive = true }
+                        }
+                    },navController = navController
+
+                )
+            }
+        }
+
+        // Otras pantallas
+        composable(AppDestinations.USER_INFO_SCREEN) {
+            UserInfoScreen(navController)
+        }
+        composable(AppDestinations.FEED_SCREEN) {
+            FeedScreen(navController)
+        }
+        composable(AppDestinations.FRIENDS_SCREEN) {
+            FriendsScreen(navController)
+        }
+    }
 }
