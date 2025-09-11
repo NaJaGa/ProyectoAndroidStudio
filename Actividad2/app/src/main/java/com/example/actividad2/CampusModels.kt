@@ -61,4 +61,36 @@ data class ExecuteResult(
 )
 
 
+data class FriendsRequest(
+    val FriendsFilter: FriendsRequestData
+)
+
+data class FriendsRequestData(
+    val LoggedUserID : Int,
+    val CampusID : Int,
+    val Name : String
+)
+
+data class FriendsResponse(
+    val d: FriendsResponseData
+)
+
+data class FriendsResponseData(
+    val ExecuteResult: String,
+    val Message: String? = null,
+    val Friends: List<FriendsData>
+)
+
+
+data class FriendsData(
+    val UserId: Int,
+    val CompleteName: String,
+    val Email: String,
+    val StudentNumber: Int,
+    val CampusID: Int,
+    val CampusName: String,
+    val IsBoolean: Boolean
+)
+
+
 

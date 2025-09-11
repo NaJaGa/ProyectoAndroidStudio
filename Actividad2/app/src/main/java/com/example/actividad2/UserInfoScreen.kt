@@ -65,12 +65,12 @@ fun UserInfoScreen(navController: NavController){
                         modifier = Modifier.width(150.dp)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("View Feed") },
-                            onClick = {navController.navigate(AppDestinations.FEED_SCREEN)}
+                            text = { Text("Main Screen") },
+                            onClick = {navController.navigate(AppDestinations.MAIN_SCREEN)}
                         )
                         DropdownMenuItem(
-                            text = { Text("Main Screen") },
-                            onClick = { navController.navigate(AppDestinations.MAIN_SCREEN) }
+                            text = { Text("Feed") },
+                            onClick = { navController.navigate(AppDestinations.FEED_SCREEN) }
                         )
                         DropdownMenuItem(
                             text = { Text("Friends") },

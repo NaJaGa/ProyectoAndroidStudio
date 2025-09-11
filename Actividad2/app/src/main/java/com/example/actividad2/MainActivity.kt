@@ -73,9 +73,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.actividad2.FeedScreen
-import com.example.actividad2.MainScreen
-import com.example.actividad2.UserInfoScreen
+
 
 
 class MainActivity : ComponentActivity() {
@@ -110,7 +108,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Dropdown(
     selectedIndex: Int,
-    onSelectedIndexChange: (Int) -> Unit
+    onSelectedIndexChange: (Int) -> Unit,
 ){
     var options by remember { mutableStateOf(listOf("Selecciona un Campus")) }
 
@@ -134,8 +132,8 @@ fun Dropdown(
         OutlinedTextField(
             modifier = Modifier
                 .menuAnchor()
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp),
+                .padding(horizontal = 30.dp)
+                .fillMaxWidth(),
             value = selectedOption,
             onValueChange = {},
             readOnly = true,
@@ -210,7 +208,7 @@ fun Mibox(
                 Spacer(modifier = Modifier.height(30.dp))
                 Dropdown(selectedIndex = selectedCampusIndex,
                     onSelectedIndexChange = { newIndex ->
-                        selectedCampusIndex = newIndex} )
+                        selectedCampusIndex = newIndex})
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -705,7 +703,7 @@ fun AppNavigator(currentUser: User?, onLogin: (User) -> Unit, onLogout: () -> Un
             FeedScreen(navController)
         }
         composable(AppDestinations.FRIENDS_SCREEN) {
-            FriendsScreen(navController)
+            FriendsScreen(navController,currentUser!!)
         }
     }
 }

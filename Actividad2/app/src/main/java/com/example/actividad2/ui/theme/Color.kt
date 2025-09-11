@@ -18,3 +18,5 @@ val White = Color(0xFFFFFFFF)
 val ColorFondo = Color(0xFFD9F2D0)
 
 val Boxfondo = Color(0xFF00A499)
+
+val Black = Color(0xFF000000)
