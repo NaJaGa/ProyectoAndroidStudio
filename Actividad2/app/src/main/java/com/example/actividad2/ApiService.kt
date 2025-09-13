@@ -14,7 +14,10 @@ interface ApiService {
     @POST("UserUI")
     suspend fun signup(@Body request: NewUserRequest ): NewUserResponse
 
-    @POST("UserUI")
+    @POST("Friends")
     suspend fun findFriends(@Body request: FriendsRequest ): FriendsResponse
+
+    @POST("FriendsUI")
+    suspend fun saveFriends(@Body request: SaveFriendsRequest ): NewUserResponse
 
 }

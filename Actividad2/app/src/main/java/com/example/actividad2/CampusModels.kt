@@ -83,13 +83,22 @@ data class FriendsResponseData(
 
 
 data class FriendsData(
-    val UserId: Int,
+    val UserID: Int,
     val CompleteName: String,
     val Email: String,
     val StudentNumber: Int,
     val CampusID: Int,
     val CampusName: String,
-    val IsBoolean: Boolean
+    val IsFriend: Boolean
+)
+
+data class SaveFriendsRequest(
+    val FriendsList: SaveFriendsData
+)
+
+data class SaveFriendsData(
+    val LoggedUserID: Int,
+    val Friends: String? = null
 )
 
 
