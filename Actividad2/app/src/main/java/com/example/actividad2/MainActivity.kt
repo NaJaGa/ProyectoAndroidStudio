@@ -648,7 +648,7 @@ suspend fun signup(nombre: String, apellido: String, matricula: String, correo: 
             CampusID = selectedCampusIndex
         )
     )
-    val response = RetrofitClient3.api.signup(NewUserRequest)
+    val response = RetrofitClient2.api.signup(NewUserRequest)
     val ExecuteResult = response.d.ExecuteResult
     val mensaje = response.d.Message
 
@@ -700,7 +700,7 @@ fun AppNavigator(currentUser: User?, onLogin: (User) -> Unit, onLogout: () -> Un
             UserInfoScreen(navController)
         }
         composable(AppDestinations.FEED_SCREEN) {
-            FeedScreen(navController)
+            FeedScreen(navController,currentUser!!)
         }
         composable(AppDestinations.FRIENDS_SCREEN) {
             FriendsScreen(navController,currentUser!!)

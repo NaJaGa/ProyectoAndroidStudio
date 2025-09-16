@@ -98,7 +98,37 @@ data class SaveFriendsRequest(
 
 data class SaveFriendsData(
     val LoggedUserID: Int,
-    val Friends: String? = null
+    val Friends: String)
+
+data class ViewFeedRequest(
+    val PostFilter: ViewFeedData
+)
+
+data class ViewFeedData(
+    val LoggedUserID: Int
+)
+
+data class ViewFeedResponse(
+    val d: ViewFeedResponseData
+
+)
+data class ViewFeedResponseData(
+    val ExecuteResult: String,
+    val Message: String,
+    val Posts: List<PostData>? = null
+)
+
+
+
+data class PostData(
+    val PostID: Int,
+    val a: Int,
+    val CompleteName: String,
+    val CampusID: Int,
+    val CampusName: String,
+    val Message: String,
+    val TimeStamp: String,
+
 )
 
 

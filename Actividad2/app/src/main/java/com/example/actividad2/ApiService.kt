@@ -20,4 +20,8 @@ interface ApiService {
     @POST("FriendsUI")
     suspend fun saveFriends(@Body request: SaveFriendsRequest ): NewUserResponse
 
+    @POST("Posts")
+    suspend fun viewFeed(@Body request: ViewFeedRequest ): ViewFeedResponse
+
+
 }

@@ -28,7 +28,7 @@ object RetrofitClient2 {
 }
 
 object RetrofitClient3 {
-    private const val BASE_URL = "https://hawkconnect.azurewebsites.net/users.aspx/"
+    private const val BASE_URL = "https://hawkconnect.azurewebsites.net/posts.aspx/"
 
     val api: ApiService by lazy {
         Retrofit.Builder()

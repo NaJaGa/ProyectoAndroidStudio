@@ -193,7 +193,7 @@ fun FriendsScreen(navController: NavController,loggedUser: User){
                 }
             }
             if (amigosEncontrados != null){
-                mostrarListaDeAmigos(amigosEncontrados!!,loggedUser)
+                MostrarListaDeAmigos(amigosEncontrados!!,loggedUser)
             }
         }
 
@@ -203,7 +203,7 @@ fun FriendsScreen(navController: NavController,loggedUser: User){
 
 
 suspend fun findFriends(loggedUser: User,campusID: Int,name: String,context: Context): List<FriendsData>?{
-    var ncampusID = if (campusID == 0) 0 else campusID - 1
+    val ncampusID = if (campusID == 0) 0 else campusID - 1
     val friendsRequest =
         FriendsRequest(
             FriendsFilter = FriendsRequestData(
@@ -236,7 +236,7 @@ suspend fun findFriends(loggedUser: User,campusID: Int,name: String,context: Con
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun mostrarListaDeAmigos(amigos: List<FriendsData>,loggedUser: User){
+fun MostrarListaDeAmigos(amigos: List<FriendsData>,loggedUser: User){
     val listadeIds = remember { mutableStateListOf<Int>() }
     var listaamigosGuardar by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
