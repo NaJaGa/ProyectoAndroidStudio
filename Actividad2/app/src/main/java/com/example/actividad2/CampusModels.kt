@@ -131,5 +131,12 @@ data class PostData(
 
 )
 
+data class postRequest(
+    val Post: PostRequestData
+)
 
+data class PostRequestData(
+    val LoggedUserID: Int,
+    val Message: String
+)
 

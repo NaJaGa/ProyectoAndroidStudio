@@ -23,5 +23,9 @@ interface ApiService {
     @POST("Posts")
     suspend fun viewFeed(@Body request: ViewFeedRequest ): ViewFeedResponse
 
+    @POST("PostsUI")
+    suspend fun post(@Body request: postRequest ): NewUserResponse
+
+
 
 }

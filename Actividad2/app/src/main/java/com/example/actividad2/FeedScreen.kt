@@ -27,6 +27,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.actividad2.ui.theme.Black
+import com.example.actividad2.ui.theme.Boxfondo
 import com.example.actividad2.ui.theme.ColorFondo
 import com.example.actividad2.ui.theme.VerdeTecmi
 import com.example.actividad2.ui.theme.White
@@ -210,9 +212,15 @@ fun FeedScreen(navController: NavController, currentUser: User?) {
                     }
                 }
 
-
             }
-
+            boxPost(
+                visible,
+                onCancel = { visible = false },
+                currentUser!!,
+                onActualizar = {
+                scope.launch {
+                    posts = getPosts(currentUser.UserId, context)
+                } })
         }
     }
 
@@ -251,5 +259,111 @@ suspend fun getPosts(LoggedUser: Int, context: Context): List<PostData>? {
         return null
     }
 
+
+}
+
+suspend fun post(loggedUser: Int, message: String, context: Context){
+    val request = postRequest(
+        Post = PostRequestData(
+            LoggedUserID = loggedUser,
+            Message = message
+        )
+    )
+    val response = RetrofitClient3.api.post(request)
+    val message = response.d.Message
+
+    if (response.d.ExecuteResult == "OK"){
+        Toast.makeText(context, "Post publicado", Toast.LENGTH_SHORT).show()
+    }
+    else{
+        Toast.makeText(context, message ?: "Error al publicar", Toast.LENGTH_SHORT).show()
+    }
+}
+
+@Composable
+fun boxPost(
+    visible: Boolean,
+    onCancel: () -> Unit,
+    loggedUser: User,
+    onActualizar: () -> Unit
+){
+    var mensaje  by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    if (visible){
+        Spacer(modifier = Modifier.height(80.dp))
+        Box(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth()
+                .background(color = Boxfondo),
+
+
+
+        ){
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+
+            ) {
+                Text(
+                    text = "Crear Post",
+                    fontSize = 30.sp,
+                    color = White
+                )
+                OutlinedTextField(
+                    value = mensaje,
+                    onValueChange = {nuevoTexto ->
+                        mensaje = nuevoTexto},
+                    label = { Text("Mensaje") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .padding(horizontal = 30.dp, vertical = 10.dp),
+                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = White,
+                        unfocusedContainerColor = White
+                    )
+                )
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+
+                ) {
+                    TextButton(
+                        onClick = { onCancel() }
+                    ){
+                        Text(
+                            text = "Cancelar",
+                            color = White,
+                            fontSize = 20.sp
+                        )
+0
+                    }
+                    TextButton(
+                        onClick = {
+                            if (mensaje.isNotEmpty()){
+                                scope.launch {
+                                    post(loggedUser.UserId,mensaje,context)
+                                    onActualizar()
+                                    onCancel()
+                                }
+                            }else{
+                                Toast.makeText(context, "Favor de Llenar el Campo", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "Publicar",
+                            color = White,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+
+            }
+        }
+    }
 
 }
